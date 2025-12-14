@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pet Voting Booth 🐾</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        h1 { text-align: center; }
+        .top-bar {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .top-bar a {
+            margin: 0 0.5rem;
+        }
+        .pets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+        .pet-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .pet-card img {
+            max-width: 100%;
+            max-height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+        .votes {
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+        .medal {
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>🐾 Django Pet Voting Booth 🐾</h1>
+
+    <div class="top-bar">
+        <a href="{% url 'add_pet' %}">➕ Add Your Pet</a>
+        <a href="{% url 'winner' %}">🏆 View Winner</a>
+    </div>
+
+    {% if pets %}
+        <p><strong>Total pets:</strong> {{ pets|length }}</p>
+
+        <div class="pets-grid">
+            {% for pet in pets %}
+                <div class="pet-card">
+                    {% if forloop.first %}
+                        <div class="medal">🏆 Currently Winning!</div>
+                    {% endif %}
+
+                    <h2>{{ pet.name }}</h2>
+                    <p><em>Type:</em> {{ pet.get_pet_type_display }}</p>
+
+                    {% if pet.image %}
+                        <img src="{{ pet.image.url }}" alt="{{ pet.name }}">
+                    {% else %}
+                        <p>(No image yet – imagine a cute {{ pet.get_pet_type_display }} here 😸)</p>
+                    {% endif %}
+
+                    {% if pet.special_talent %}
+                        <p>Talent: {{ pet.special_talent }}</p>
+                    {% endif %}
+
+                    <p class="votes">Votes: {{ pet.votes }}</p>
+
+                    <form action="{% url 'vote_pet' pet.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">👍 Vote for {{ pet.name }}</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No pets yet. Be the first to add a legendary animal! 🐉</p>
+    {% endif %}
+</body>
+</html>

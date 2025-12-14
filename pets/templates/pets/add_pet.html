@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add a Pet</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        form p { margin-bottom: 0.8rem; }
+    </style>
+</head>
+<body>
+    <h1>➕ Add Your Pet</h1>
+
+    <p>Fill in your pet details. Make them sound amazing so people will vote! 😎</p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Pet</button>
+    </form>
+
+    <p><a href="{% url 'pet_list' %}">⬅ Back to Pet List</a></p>
+</body>
+</html>
+
